@@ -27,9 +27,7 @@ const getBgColor = (added, removed) => {
 const highlightTrailingWhitespace = (line, bgColor) =>
   line.replace(/\s+$/, bgColor('$&'));
 
-const getAnnotation = () =>
-  `$(chalk.green('- Expected')'\n'
-  $(chalk.red('+ Received')'\n\n'`;
+const getAnnotation = () => `${chalk.green('- Expected')}\n  ${chalk.red('+ Received')}\n\n`;
 
 const _diffLines = (a, b) => {
   let isDifferent = false;
@@ -55,7 +53,7 @@ const _diffLines = (a, b) => {
         if (part.added) mark = '+';
         else if (part.removed) mark = '-';
 
-        return `${color(mark)} ${color(highlightedLine)}\n`;
+        return `  ${color(mark)} ${color(highlightedLine)}\n`;
       }).join('');
     }).join('').trim(),
     isDifferent,
@@ -101,14 +99,14 @@ const _structuredPatch = (_a, _b) => {
           const bgColor = getBgColor(added, removed);
 
           const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-          return `${color(highlightedLine)}\n`;
+          return `  ${color(highlightedLine)}\n`;
         }).join('');
 
         isDifferent = true;
         return shouldShowPatchMarks(hunk, oldLinesCount)
           ? createPatchMark(hunk) + lines
           : lines;
-      }).join('').trim(),
+      }).join(''),
     isDifferent,
   };
 };
