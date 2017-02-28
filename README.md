@@ -1,0 +1,1 @@
+Completely ripped from https://github.com/tap-format with minor style changes
