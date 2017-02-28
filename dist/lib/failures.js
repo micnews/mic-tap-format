@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.formatAssertionError = undefined;
 
-var _diff = require('diff');
-
 var _diffStrings = require('./diff-strings');
 
 var _diffStrings2 = _interopRequireDefault(_diffStrings);
@@ -36,23 +34,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var indent = _ramda2.default.pipe(_pad2.default, _pad2.default);
 var errorIndent = _ramda2.default.pipe(indent, _pad2.default);
 var addExtraIndent = _ramda2.default.pipe(_ramda2.default.defaultTo(0), _ramda2.default.repeat(' '), _ramda2.default.join(''));
-var formatDiff = _ramda2.default.pipe(_diffStrings2.default, _ramda2.default.map(function (part) {
-  var color = 'dim';
-  var prefix = '';
-
-  if (part.removed) {
-    color = 'red';
-    prefix = '-';
-  }
-  if (part.added) {
-    color = 'green';
-    prefix = '+';
-  }
-  return _chalk2.default[color](prefix + ' ' + part.value);
-}), _ramda2.default.join(''));
+var replaceLineBreaks = function replaceLineBreaks(str) {
+  return str.replace(/(?:\r\n|\r|\n|\\n|\\\n|\\\\n)/g, '\n');
+};
 
 var formatAssertionError = exports.formatAssertionError = function formatAssertionError(line, extraIndent) {
-  var diffs = formatDiff(String(line.diagnostic.expected), String(line.diagnostic.actual));
+  var diffs = (0, _diffStrings2.default)(replaceLineBreaks(line.diagnostic.expected), replaceLineBreaks(line.diagnostic.actual), { expand: false });
+
   var output = [];
 
   output.push(indent(_chalk2.default.red.bold(_figures2.default.cross + ' ' + line.title)));
