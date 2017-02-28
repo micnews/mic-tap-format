@@ -1,25 +1,12 @@
-const Rx = require('rx');
-const figures = require('figures');
-const format = require('chalk');
-const formatFailures = require('./lib/failures');
-const formatResults = require('./lib/results');
-const exitOnFailure = require('./lib/exit');
+import Rx from 'rx';
+import figures from 'figures';
+import format from 'chalk';
+import pad from './lib/pad';
+import formatFailures, { formatAssertionError } from './lib/failures';
+import formatResults from './lib/results';
+import exitOnFailure from './lib/exit';
 
-const formatAssertionError = formatFailures.formatAssertionError;
-
-const exports = module.exports = function (input$) {
-  return Rx.Observable
-    .merge(
-      formatTestsAndAssertions(input$),
-      formatFailures(input$),
-      formatResults(input$),
-      exitOnFailure(input$),
-    );
-};
-
-exports.format = formatTestsAndAssertions;
-
-function formatTestsAndAssertions(input$) {
+export const formatTestsAndAssertions = (input$) => {
   const output$ = new Rx.Subject();
 
   input$.tests$
@@ -56,9 +43,15 @@ function formatTestsAndAssertions(input$) {
     });
 
   return output$;
-}
+};
 
-function pad(str) {
-  str = str || '';
-  return `  ${str}`;
+
+export default function (input$) {
+  return Rx.Observable
+    .merge(
+      formatTestsAndAssertions(input$),
+      formatFailures(input$),
+      formatResults(input$),
+      exitOnFailure(input$),
+    );
 }

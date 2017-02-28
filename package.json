@@ -4,7 +4,8 @@
   "description": "A tap formatter",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "miclint | snazzy",
+    "watch": "babel index.js --out-dir 'dist' --watch"
   },
   "bin": {
     "mic-tap-format": "bin/index.js"
@@ -30,5 +31,18 @@
     "rx": "^4.1.0",
     "rx-node": "^1.0.2",
     "split": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-watch": "^2.0.6",
+    "snazzy": "^6.0.0"
+  },
+  "miclint": {
+    "ignore": [
+      "dist",
+      "bin"
+    ]
   }
 }
