@@ -2,10 +2,11 @@
   "name": "mic-tap-format",
   "version": "1.0.0",
   "description": "A tap formatter",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "miclint | snazzy",
-    "watch": "babel index.js --out-dir 'dist' --watch"
+    "build": "rm -rf dist && babel src --out-dir 'dist'",
+    "watch": "babel src --out-dir 'dist' --watch"
   },
   "bin": {
     "mic-tap-format": "bin/index.js"
