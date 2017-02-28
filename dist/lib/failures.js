@@ -7,6 +7,10 @@ exports.formatAssertionError = undefined;
 
 var _diff = require('diff');
 
+var _diffStrings = require('./diff-strings');
+
+var _diffStrings2 = _interopRequireDefault(_diffStrings);
+
 var _figures = require('figures');
 
 var _figures2 = _interopRequireDefault(_figures);
@@ -32,7 +36,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var indent = _ramda2.default.pipe(_pad2.default, _pad2.default);
 var errorIndent = _ramda2.default.pipe(indent, _pad2.default);
 var addExtraIndent = _ramda2.default.pipe(_ramda2.default.defaultTo(0), _ramda2.default.repeat(' '), _ramda2.default.join(''));
-var formatDiff = _ramda2.default.pipe(_diff.diffChars, _ramda2.default.map(function (part) {
+var formatDiff = _ramda2.default.pipe(_diffStrings2.default, _ramda2.default.map(function (part) {
   var color = 'dim';
   var prefix = '';
 
@@ -75,7 +79,7 @@ exports.default = function (input$) {
 
     var past = failureCount === 1 ? 'was' : 'were';
     var plural = failureCount === 1 ? 'failure' : 'failures';
-    var title = [_chalk2.default.bgRed.black.bold(' FAILED TESTS '), 'There ' + past + ' ' + _chalk2.default.red.bold(failureCount) + ' ' + plural].join(' ');
+    var title = [_chalk2.default.bgRed.white.bold(' FAILED TESTS '), 'There ' + past + ' ' + _chalk2.default.red.bold(failureCount) + ' ' + plural].join(' ');
 
     output$.onNext((0, _pad2.default)(title));
     return output$.onNext('');

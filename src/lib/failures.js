@@ -1,4 +1,5 @@
 import { diffChars } from 'diff';
+import diffStrings from './diff-strings';
 import figures from 'figures';
 import format from 'chalk';
 import R from 'ramda';
@@ -9,7 +10,7 @@ const indent = R.pipe(pad, pad);
 const errorIndent = R.pipe(indent, pad);
 const addExtraIndent = R.pipe(R.defaultTo(0), R.repeat(' '), R.join(''));
 const formatDiff = R.pipe(
-  diffChars,
+  diffStrings,
   R.map((part) => {
     let color = 'dim';
     let prefix = '';
@@ -59,7 +60,7 @@ export default (input$) => {
       const past = failureCount === 1 ? 'was' : 'were';
       const plural = failureCount === 1 ? 'failure' : 'failures';
       const title = [
-        format.bgRed.black.bold(' FAILED TESTS '),
+        format.bgRed.white.bold(' FAILED TESTS '),
         `There ${past} ${format.red.bold(failureCount)} ${plural}`,
       ].join(' ');
 
