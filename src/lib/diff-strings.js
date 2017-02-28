@@ -2,20 +2,34 @@ import chalk from 'chalk';
 import { structuredPatch, diffLines } from 'diff';
 
 const NO_DIFF_MESSAGE = 'No diff message ';
-const DIFF_CONTEXT  = 5;
+const DIFF_CONTEXT = 5;
 
-const getColor = (added, removed) =>
-  added ? chalk.red : removed ? chalk.green : chalk.dim;
+const getColor = (added, removed) => {
+  let color = chalk.dim;
+  if (added) {
+    color = chalk.red;
+  } else if (removed) {
+    color = chalk.green;
+  }
+  return color;
+};
 
-const getBgColor = (added, removed) =>
-  added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
+const getBgColor = (added, removed) => {
+  let color = chalk.dim;
+  if (added) {
+    color = chalk.bgRed;
+  } else if (removed) {
+    color = chalk.bgGreen;
+  }
+  return color;
+};
 
 const highlightTrailingWhitespace = (line, bgColor) =>
   line.replace(/\s+$/, bgColor('$&'));
 
-const getAnnotation = (options) =>
-  chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) + '\n' +
-  chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) + '\n\n';
+const getAnnotation = () =>
+  `$(chalk.green('- Expected')'\n'
+  $(chalk.red('+ Received')'\n\n'`;
 
 const _diffLines = (a, b) => {
   let isDifferent = false;
@@ -36,8 +50,12 @@ const _diffLines = (a, b) => {
 
       return lines.map((line) => {
         const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-        const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
-        return mark + ' ' + color(highlightedLine) + '\n';
+
+        let mark = ' ';
+        if (part.added) mark = '+';
+        else if (part.removed) mark = '-';
+
+        return `${color(mark)} ${color(highlightedLine)}\n`;
       }).join('');
     }).join('').trim(),
     isDifferent,
@@ -57,7 +75,9 @@ const createPatchMark = (hunk) => {
   return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
 };
 
-const _structuredPatch = (a, b) => {
+const _structuredPatch = (_a, _b) => {
+  let a = _a;
+  let b = _b;
   const options = { context: DIFF_CONTEXT };
   let isDifferent = false;
   // Make sure the strings end with a newline.
@@ -73,7 +93,7 @@ const _structuredPatch = (a, b) => {
   return {
     diff: structuredPatch('', '', a, b, '', '', options)
       .hunks.map((hunk) => {
-        const lines = hunk.lines.map(line => {
+        const lines = hunk.lines.map((line) => {
           const added = line[0] === '+';
           const removed = line[0] === '-';
 
@@ -81,7 +101,7 @@ const _structuredPatch = (a, b) => {
           const bgColor = getBgColor(added, removed);
 
           const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-          return color(highlightedLine) + '\n';
+          return `${color(highlightedLine)}\n`;
         }).join('');
 
         isDifferent = true;
@@ -93,7 +113,7 @@ const _structuredPatch = (a, b) => {
   };
 };
 
-function diffStrings(a, b, options) {
+export default (a, b, options) => {
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
@@ -104,9 +124,6 @@ function diffStrings(a, b, options) {
 
   if (result.isDifferent) {
     return getAnnotation(options) + result.diff;
-  } else {
-    return NO_DIFF_MESSAGE;
   }
-}
-
-module.exports = diffStrings;
+  return NO_DIFF_MESSAGE;
+};
