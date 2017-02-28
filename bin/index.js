@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const parser = require('../src/lib/parser');
-const formatAsSpec = require('../');
+const parser = require('../dist/lib/parser');
+const formatAsSpec = require('../dist/').default;
 
 const input = parser.observeStream(process.stdin);
 
