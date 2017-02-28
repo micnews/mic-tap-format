@@ -35,20 +35,20 @@ exports.default = function (input$) {
     switch (line.name) {
       case 'tests':
         {
-          output$.onNext((0, _pad2.default)('assertions:  ' + line.count));
+          output$.onNext((0, _pad2.default)(_chalk2.default.bgWhite.black(' ASSERTIONS ') + '     ' + _chalk2.default.white(line.count)));
           break;
         }
 
       case 'pass':
         {
-          output$.onNext((0, _pad2.default)(_chalk2.default.green('passing:     ' + line.count)));
+          output$.onNext((0, _pad2.default)(_chalk2.default.bgGreen.black(' PASSED ') + '         ' + _chalk2.default.green(line.count)));
           break;
         }
 
       case 'fail':
         {
           if (line.count > 0) {
-            output$.onNext((0, _pad2.default)(_chalk2.default.red('failing:     ' + line.count)));
+            output$.onNext((0, _pad2.default)(_chalk2.default.bgRed.black(' FAILED ') + '         ' + _chalk2.default.red(line.count)));
           }
           break;
         }
@@ -59,7 +59,8 @@ exports.default = function (input$) {
     output$.onNext('\n');
     output$.onNext(_chalk2.default.red.bold('PARSING ERROR:'), 'There was an error in the TAP parsing. Please open an issue at', _chalk2.default.underline('https://github.com/scottcorgan/tap-out/issues.'));
   }, function () {
-    output$.onNext((0, _pad2.default)('duration:    ' + (0, _prettyMs2.default)(timer())));
+    output$.onNext('\n');
+    output$.onNext((0, _pad2.default)(_chalk2.default.bgYellow.black(' DURATION ') + '       ' + _chalk2.default.yellow((0, _prettyMs2.default)(timer()))));
     output$.onNext('\n');
   });
 

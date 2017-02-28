@@ -14,18 +14,18 @@ export default (input$) => {
       (line) => {
         switch (line.name) {
           case 'tests': {
-            output$.onNext(pad(`assertions:  ${line.count}`));
+            output$.onNext(pad(`${format.bgWhite.black(' ASSERTIONS ')}     ${format.white(line.count)}`));
             break;
           }
 
           case 'pass': {
-            output$.onNext(pad(format.green(`passing:     ${line.count}`)));
+            output$.onNext(pad(`${format.bgGreen.black(' PASSED ')}         ${format.green(line.count)}`));
             break;
           }
 
           case 'fail': {
             if (line.count > 0) {
-              output$.onNext(pad(format.red(`failing:     ${line.count}`)));
+              output$.onNext(pad(`${format.bgRed.black(' FAILED ')}         ${format.red(line.count)}`));
             }
             break;
           }
@@ -42,7 +42,8 @@ export default (input$) => {
         );
       },
       () => {
-        output$.onNext(pad(`duration:    ${prettyMs(timer())}`));
+        output$.onNext('\n');
+        output$.onNext(pad(`${format.bgYellow.black(' DURATION ')}       ${format.yellow(prettyMs(timer()))}`));
         output$.onNext('\n');
       },
     );

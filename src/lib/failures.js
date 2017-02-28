@@ -11,11 +11,18 @@ const addExtraIndent = R.pipe(R.defaultTo(0), R.repeat(' '), R.join(''));
 const formatDiff = R.pipe(
   diffChars,
   R.map((part) => {
-    let color = 'white';
-    if (part.removed) color = 'red';
-    if (part.added) color = 'green';
+    let color = 'dim';
+    let prefix = '';
 
-    return format[color](part.value);
+    if (part.removed) {
+      color = 'red';
+      prefix = '-';
+    }
+    if (part.added) {
+      color = 'green';
+      prefix = '+';
+    }
+    return format[color](`${prefix} ${part.value}`);
   }),
   R.join(''),
 );
@@ -27,7 +34,7 @@ export const formatAssertionError = (line, extraIndent) => {
   output.push(indent(format.red.bold(`${figures.cross} ${line.title}`)));
   output.push(indent(format.dim('  at ') + format.dim(line.diagnostic.at)));
   output.push('');
-  output.push(errorIndent(`${format.bgGreen('actual')} ${format.bgRed('expected')}`));
+  output.push(errorIndent(`${format.green('actual')} ${format.red('expected')}`));
   output.push('');
   output.push(errorIndent(diffs));
   output.push('');
@@ -52,7 +59,7 @@ export default (input$) => {
       const past = failureCount === 1 ? 'was' : 'were';
       const plural = failureCount === 1 ? 'failure' : 'failures';
       const title = [
-        format.red.bold('Failed Tests:'),
+        format.bgRed.black.bold(' FAILED TESTS '),
         `There ${past} ${format.red.bold(failureCount)} ${plural}`,
       ].join(' ');
 
@@ -88,15 +95,6 @@ export default (input$) => {
           output$.onNext(pad(pad(set.test.title)));
           set.assertions
             .forEach((assertion) => {
-              const line = pad(pad(pad([
-                format.red(`${figures.cross} ${assertion.title}`),
-                '\n',
-                pad(''),
-                '\n',
-              ].join(' '))));
-
-              console.log(line); // eslint-disable-line
-
               output$.onNext(formatAssertionError(assertion, 2));
             });
 
