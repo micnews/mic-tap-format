@@ -1,4 +1,3 @@
-import { diffChars } from 'diff';
 import diffStrings from './diff-strings';
 import figures from 'figures';
 import format from 'chalk';
@@ -9,27 +8,15 @@ import pad from './pad';
 const indent = R.pipe(pad, pad);
 const errorIndent = R.pipe(indent, pad);
 const addExtraIndent = R.pipe(R.defaultTo(0), R.repeat(' '), R.join(''));
-const formatDiff = R.pipe(
-  diffStrings,
-  R.map((part) => {
-    let color = 'dim';
-    let prefix = '';
-
-    if (part.removed) {
-      color = 'red';
-      prefix = '-';
-    }
-    if (part.added) {
-      color = 'green';
-      prefix = '+';
-    }
-    return format[color](`${prefix} ${part.value}`);
-  }),
-  R.join(''),
-);
+const replaceLineBreaks = str => str.replace(/(?:\r\n|\r|\n|\\n|\\\n|\\\\n)/g, '\n');
 
 export const formatAssertionError = (line, extraIndent) => {
-  const diffs = formatDiff(String(line.diagnostic.expected), String(line.diagnostic.actual));
+  const diffs = diffStrings(
+    replaceLineBreaks(line.diagnostic.expected),
+    replaceLineBreaks(line.diagnostic.actual),
+    { expand: false },
+  );
+
   const output = [];
 
   output.push(indent(format.red.bold(`${figures.cross} ${line.title}`)));
