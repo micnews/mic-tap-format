@@ -1,1 +1,1 @@
-Completely ripped from https://github.com/tap-format with minor style changes
+A frankensteined tap formatter ripped from https://github.com/tap-format and https://github.com/facebook/jest with a sprinkling of some custom styles
