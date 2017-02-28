@@ -39,14 +39,11 @@ var replaceLineBreaks = function replaceLineBreaks(str) {
 };
 
 var formatAssertionError = exports.formatAssertionError = function formatAssertionError(line, extraIndent) {
-  var diffs = (0, _diffStrings2.default)(replaceLineBreaks(line.diagnostic.expected), replaceLineBreaks(line.diagnostic.actual), { expand: false });
+  var diffs = (0, _diffStrings2.default)(replaceLineBreaks(String(line.diagnostic.expected)), replaceLineBreaks(String(line.diagnostic.actual)), { expand: false });
 
   var output = [];
 
   output.push(indent(_chalk2.default.red.bold(_figures2.default.cross + ' ' + line.title)));
-  output.push(indent(_chalk2.default.dim('  at ') + _chalk2.default.dim(line.diagnostic.at)));
-  output.push('');
-  output.push(errorIndent(_chalk2.default.green('actual') + ' ' + _chalk2.default.red('expected')));
   output.push('');
   output.push(errorIndent(diffs));
   output.push('');

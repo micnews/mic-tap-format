@@ -12,17 +12,14 @@ const replaceLineBreaks = str => str.replace(/(?:\r\n|\r|\n|\\n|\\\n|\\\\n)/g, '
 
 export const formatAssertionError = (line, extraIndent) => {
   const diffs = diffStrings(
-    replaceLineBreaks(line.diagnostic.expected),
-    replaceLineBreaks(line.diagnostic.actual),
+    replaceLineBreaks(String(line.diagnostic.expected)),
+    replaceLineBreaks(String(line.diagnostic.actual)),
     { expand: false },
   );
 
   const output = [];
 
   output.push(indent(format.red.bold(`${figures.cross} ${line.title}`)));
-  output.push(indent(format.dim('  at ') + format.dim(line.diagnostic.at)));
-  output.push('');
-  output.push(errorIndent(`${format.green('actual')} ${format.red('expected')}`));
   output.push('');
   output.push(errorIndent(diffs));
   output.push('');
