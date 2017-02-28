@@ -1,72 +1,64 @@
-var Rx = require('rx')
-var figures = require('figures')
-var format = require('chalk')
-var formatFailures = require('./lib/failures')
-var formatResults = require('./lib/results')
-var exitOnFailure = require('./lib/exit')
+const Rx = require('rx');
+const figures = require('figures');
+const format = require('chalk');
+const formatFailures = require('./lib/failures');
+const formatResults = require('./lib/results');
+const exitOnFailure = require('./lib/exit');
 
-var formatAssertionError = formatFailures.formatAssertionError
+const formatAssertionError = formatFailures.formatAssertionError;
 
-var exports = module.exports = function (input$) {
-
+const exports = module.exports = function (input$) {
   return Rx.Observable
     .merge(
       formatTestsAndAssertions(input$),
       formatFailures(input$),
       formatResults(input$),
-      exitOnFailure(input$)
-    )
-}
+      exitOnFailure(input$),
+    );
+};
 
-exports.format = formatTestsAndAssertions
+exports.format = formatTestsAndAssertions;
 
-function formatTestsAndAssertions (input$) {
-
-  var output$ = new Rx.Subject()
+function formatTestsAndAssertions(input$) {
+  const output$ = new Rx.Subject();
 
   input$.tests$
-    .forEach(function (line) {
-
-      output$.onNext('')
-      output$.onNext(pad(format.bold(line.title)))
-    })
+    .forEach((line) => {
+      output$.onNext('');
+      output$.onNext(pad(format.bold(line.title)));
+    });
 
   input$.passingAssertions$
-    .forEach(function (line) {
+    .forEach((line) => {
+      let output = pad(pad());
+      const fig = figures[line.ok ? 'tick' : 'cross'];
+      output += format[line.ok ? 'green' : 'red'](`${fig} `);
+      output += format.dim(line.title);
 
-      var output = pad(pad())
-      var fig = figures[line.ok ? 'tick' : 'cross']
-      output += format[line.ok ? 'green' : 'red'](fig + ' ')
-      output += format.dim(line.title)
-
-      output$.onNext(output)
-    })
+      output$.onNext(output);
+    });
 
   input$.failingAssertions$
     .map(formatAssertionError)
-    .forEach(function (formattedLine) {
-
-      output$.onNext(formattedLine)
-    })
+    .forEach((formattedLine) => {
+      output$.onNext(formattedLine);
+    });
 
   input$.assertions$
-    .subscribeOnCompleted(function () {
-
-      output$.onNext('\n')
-    })
+    .subscribeOnCompleted(() => {
+      output$.onNext('\n');
+    });
 
   input$.comments$
-    .forEach(function (comment) {
+    .forEach((comment) => {
+      const line = pad(pad(comment.title));
+      output$.onNext(format.yellow(line));
+    });
 
-      var line = pad(pad(comment.title))
-      output$.onNext(format.yellow(line))
-    })
-
-  return output$
+  return output$;
 }
 
-function pad (str) {
-
-  str = str || ''
-  return '  ' + str
+function pad(str) {
+  str = str || '';
+  return `  ${str}`;
 }
