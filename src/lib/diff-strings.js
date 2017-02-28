@@ -1,8 +1,6 @@
 import chalk from 'chalk';
 import { structuredPatch, diffLines } from 'diff';
 
-
-
 const NO_DIFF_MESSAGE = 'No diff message ';
 const DIFF_CONTEXT  = 5;
 
