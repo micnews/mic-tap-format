@@ -1,12 +1,11 @@
-import diffStrings from './diff-strings';
 import figures from 'figures';
 import format from 'chalk';
 import R from 'ramda';
 import Rx from 'rx';
+import diffStrings from './diff-strings';
 import pad from './pad';
 
 const indent = R.pipe(pad, pad);
-const errorIndent = R.pipe(indent, pad);
 const addExtraIndent = R.pipe(R.defaultTo(0), R.repeat(' '), R.join(''));
 const replaceLineBreaks = str => str.replace(/(?:\r\n|\r|\n|\\n|\\\n|\\\\n)/g, '\n');
 
@@ -21,7 +20,7 @@ export const formatAssertionError = (line, extraIndent) => {
 
   output.push(indent(format.red.bold(`${figures.cross} ${line.title}`)));
   output.push('');
-  output.push(errorIndent(diffs));
+  output.push(diffs);
   output.push('');
 
   return output
