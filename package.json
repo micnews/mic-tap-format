@@ -1,6 +1,6 @@
 {
   "name": "mic-tap-format",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A tap formatter",
   "main": "dist/index.js",
   "scripts": {
